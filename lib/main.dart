@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'dart:core';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'CryptoDetailPage.dart';
@@ -18,29 +19,33 @@ final ThemeData kDefaultTheme = new ThemeData(
 );
 
 
-void main() async{
-  List info = await getInfo();
+void main(){
   runApp(new MaterialApp(
     theme: defaultTargetPlatform == TargetPlatform.iOS
         ? kIOSTheme
         : kDefaultTheme,
     home: new Center(
-      child: new CurrenciesWidget(info),
+      child: new CurrenciesWidget(),
     ),
   ));
 }
 
-Future<List> getInfo() async {
-  String apiUrl = 'https://api.coinmarketcap.com/v1/ticker/?limit=10';
-  http.Response response = await http.get(apiUrl);
-  return json.decode(response.body);
+class CurrenciesWidget extends StatefulWidget {
+  @override
+  CurrenciesWidgetState createState() => new CurrenciesWidgetState();
 }
 
-class CurrenciesWidget extends StatelessWidget{
-  final List<MaterialColor> _colors = [Colors.blue, Colors.indigo, Colors.red];
-  final List _currencies;
 
-  CurrenciesWidget(this._currencies);
+class CurrenciesWidgetState extends State<CurrenciesWidget>{
+  final List<MaterialColor> _colors = [Colors.blue, Colors.indigo, Colors.red];
+  Map _currencies;
+  Map currencyInfo = new Map();
+
+  @override
+  void initState(){
+    super.initState();
+    this.getTopCoins();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +58,7 @@ class CurrenciesWidget extends StatelessWidget{
     );
   }
 
-  Widget _buildBody() {
+   Widget _buildBody() {
     return new Container(
       child: new Column(
         // Column for keeping to top down 
@@ -62,28 +67,28 @@ class CurrenciesWidget extends StatelessWidget{
     );
   }
 
+
   Widget _getListViewWidget() {
-    return new Flexible(
-        child: new ListView.builder(
-            itemCount: _currencies.length,
+    return new Expanded(child: new ListView.builder(
+            itemCount: 20,
             itemBuilder: (context, index) {
-              final Map currency = _currencies[index];
+              final indexStr = (index + 1).toString();
+              final Map currency = _currencies[indexStr];
               final MaterialColor color = _colors[index % _colors.length];
               return _getListTileWithPlatform(context, currency, color);
-            })
-    );
+            }));
   }
 
   CircleAvatar _getLeadingWidget(String currencyName, MaterialColor color) {
     return new CircleAvatar(
-      backgroundColor: color,
-      child: new Text(currencyName[0]),
+      backgroundColor: new Color(0x00000000),
+      backgroundImage: new Image.network("https://chasing-coins.com/api/v1/std/logo/" + currencyName.toUpperCase()).image,
     );
   }
 
-  Text _getTitleWidget(String currencyName) {
+  Text _getTitleWidget(String coinData){
     return new Text(
-      currencyName,
+      coinData,
       style: new TextStyle(fontWeight: FontWeight.bold),
     );
   }
@@ -94,18 +99,28 @@ class CurrenciesWidget extends StatelessWidget{
     return new RichText(text: priceTextWidget);
   }
 
-  ListTile _getListTile(BuildContext context, Map currency, MaterialColor color) {
+  ListTile _getListTile(BuildContext context, Map currency, MaterialColor color) {     
     return new ListTile(
-      leading: _getLeadingWidget(currency['name'], color),
-      title: _getTitleWidget(currency['name']),
-      trailing: _getSubtitleText(currency['price_usd']),
+      leading: _getLeadingWidget(currency['symbol'], color),
+      title:  _getTitleWidget(currency['symbol']),
+      trailing: _getSubtitleText(currency['price']),
       onTap: (){
         Navigator.push(
           context,
-          new MaterialPageRoute(builder: (context) => new CryptoDetailPage(currency)),
+          new MaterialPageRoute(builder: (context) => new CryptoDetailPage(currency['symbol'].toString())),
         );
       }
     );
+  }
+
+  Future<String> getTopCoins() async {
+    String apiUrl = 'https://chasing-coins.com/api/v1/top-coins/20';
+    http.Response response = await http.get(apiUrl);
+    Map data = json.decode(response.body);
+    setState((){
+      _currencies = data;
+      });
+    return "Success";
   }
 
   Widget _getListTileWithPlatform(BuildContext context, Map currency, MaterialColor color){
