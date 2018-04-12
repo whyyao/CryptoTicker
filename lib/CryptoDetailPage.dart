@@ -24,24 +24,12 @@ class CryptoDetailPageState extends State<CryptoDetailPage> {
   
   @override
   Widget build(BuildContext context) {
-    final String money = '\$${currencyData["price"]}';
+    
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(currencySymbol),
       ),
-      body: new Center(child:
-      new Container(
-        padding: new EdgeInsets.all(20.0),
-        child: new Column(children: <Widget>[
-          new Text(currencySymbol, style: new TextStyle(fontSize: 24.0),),
-          new Text(money, style: new TextStyle(fontSize: 56.0),),
-          _getHourChanged(currencyData["change"]["hour"])
-        ]
-        ),
-
-      )
-
-      ),
+      body: networkComplete()
     );
   }
 
@@ -55,7 +43,6 @@ class CryptoDetailPageState extends State<CryptoDetailPage> {
 
   Future<String> getCoinBySymbol(String symbol) async{
     String apiUrl = 'https://chasing-coins.com/api/v1/std/coin/' + symbol.toUpperCase();
-    print(apiUrl);
     http.Response response = await http.get(apiUrl);
     Map data = json.decode(response.body);
     setState(() {
@@ -64,5 +51,26 @@ class CryptoDetailPageState extends State<CryptoDetailPage> {
     return "Success";
   }
 
+  Widget networkComplete(){
+    if(currencyData != null){
+      final String money = '\$${currencyData["price"]}';
+      return new Center(child:
+        new Container(
+          padding: new EdgeInsets.all(20.0),
+          child: new Column(children: <Widget>[
+            new Text(currencySymbol, style: new TextStyle(fontSize: 24.0),),
+            new Text(money, style: new TextStyle(fontSize: 56.0),),
+            _getHourChanged(currencyData["change"]["hour"])
+          ]
+          ),
+
+        )
+        );
+  }else{
+    return new Center(
+      child: const CircularProgressIndicator(),
+    );
+  }
+  }
 
 }

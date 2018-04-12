@@ -59,12 +59,18 @@ class CurrenciesWidgetState extends State<CurrenciesWidget>{
   }
 
    Widget _buildBody() {
-    return new Container(
-      child: new Column(
-        // Column for keeping to top down 
-        children: <Widget>[_getListViewWidget()],
-      ),
-    );
+     if(_currencies != null){
+      return new Container(
+        child: new Column(
+          // Column for keeping to top down 
+          children: <Widget>[_getListViewWidget()],
+        ),
+      );
+     }else{
+       return new Center(
+         child: const CircularProgressIndicator(),
+       );
+     }
   }
 
 
