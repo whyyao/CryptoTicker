@@ -37,7 +37,6 @@ class CurrenciesWidget extends StatefulWidget {
 
 
 class CurrenciesWidgetState extends State<CurrenciesWidget>{
-  final List<MaterialColor> _colors = [Colors.blue, Colors.indigo, Colors.red];
   Map _currencies;
   Map currencyInfo = new Map();
 
@@ -80,12 +79,11 @@ class CurrenciesWidgetState extends State<CurrenciesWidget>{
             itemBuilder: (context, index) {
               final indexStr = (index + 1).toString();
               final Map currency = _currencies[indexStr];
-              final MaterialColor color = _colors[index % _colors.length];
-              return _getListTileWithPlatform(context, currency, color);
+              return _getListTileWithPlatform(context, currency);
             }));
   }
 
-  CircleAvatar _getLeadingWidget(String currencyName, MaterialColor color) {
+  CircleAvatar _getLeadingWidget(String currencyName) {
     return new CircleAvatar(
       backgroundColor: new Color(0x00000000),
       backgroundImage: new Image.network("https://chasing-coins.com/api/v1/std/logo/" + currencyName.toUpperCase()).image,
@@ -105,9 +103,9 @@ class CurrenciesWidgetState extends State<CurrenciesWidget>{
     return new RichText(text: priceTextWidget);
   }
 
-  ListTile _getListTile(BuildContext context, Map currency, MaterialColor color) {     
+  ListTile _getListTile(BuildContext context, Map currency) {
     return new ListTile(
-      leading: _getLeadingWidget(currency['symbol'], color),
+      leading: _getLeadingWidget(currency['symbol']),
       title:  _getTitleWidget(currency['symbol']),
       trailing: _getSubtitleText(currency['price']),
       onTap: (){
@@ -129,11 +127,11 @@ class CurrenciesWidgetState extends State<CurrenciesWidget>{
     return "Success";
   }
 
-  Widget _getListTileWithPlatform(BuildContext context, Map currency, MaterialColor color){
+  Widget _getListTileWithPlatform(BuildContext context, Map currency){
     if(defaultTargetPlatform == TargetPlatform.iOS){
-      return _getListTile(context, currency, color);
+      return _getListTile(context, currency);
     }else{
-      return new Card(child: _getListTile(context, currency, color),);
+      return new Card(child: _getListTile(context, currency),);
     }
   }
 }
