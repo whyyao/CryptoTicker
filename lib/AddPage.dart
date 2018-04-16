@@ -83,8 +83,6 @@ class AddPageState extends State<AddPage>{
         }
       });
     }
-
-    print(resultList);
    
     return new Expanded(child: new ListView.builder(
             itemCount: resultList.length,
@@ -129,4 +127,5 @@ class AddPageState extends State<AddPage>{
       body: _buildBody()
     );
   }
+
 }
