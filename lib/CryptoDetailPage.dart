@@ -30,6 +30,7 @@ class CryptoDetailPageState extends State<CryptoDetailPage> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(currencySymbol),
+        //backgroundColor: new Color(0x979797),
       ),
       body: networkComplete()
     );
@@ -37,17 +38,17 @@ class CryptoDetailPageState extends State<CryptoDetailPage> {
 
   Text _getHourChanged(String hc){
     if(double.parse(hc) < 0){
-      return new Text("hour changed: ${hc}%", style: new TextStyle(color: Colors.red),);
+      return new Text("hour changed: $hc%", style: new TextStyle(color: Colors.red),);
     }else{
-      return new Text("hour changed: ${hc}%", style: new TextStyle(color: Colors.green),);
+      return new Text("hour changed: $hc%", style: new TextStyle(color: Colors.green),);
     }
   }
 
   Text _getDayChanged(String dc){
     if(double.parse(dc) < 0){
-      return new Text("day changed: ${dc}%", style: new TextStyle(color: Colors.red),);
+      return new Text("day changed: $dc%", style: new TextStyle(color: Colors.red),);
     }else{
-      return new Text("day changed: ${dc}%", style: new TextStyle(color: Colors.green),);
+      return new Text("day changed: $dc%", style: new TextStyle(color: Colors.green),);
     }
   }
 

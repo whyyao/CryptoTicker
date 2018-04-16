@@ -11,7 +11,7 @@ import 'package:cypto_ticker/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    //await tester.pumpWidget(new CurrenciesWidget(_currencies));
+    await tester.pumpWidget(new MainPage());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
