@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/foundation.dart';
 import 'CryptoDetailPage.dart';
+//import 'database/SavedCurrenciesDB.dart';
+//import 'model/saved_currency.dart';
 
 class AddPage extends StatefulWidget {
   @override
@@ -16,12 +18,20 @@ class AddPageState extends State<AddPage>{
   SearchBar searchBar;
   List allCoins;
   String searchKeywords = "";
+  //DatabaseHelper db = DatabaseHelper.internal();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState(){
     super.initState();
     this.getAllCoins();
+    //db.initDb();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    searchKeywords = "";
   }
 
   AppBar buildAppBar(BuildContext context) {
@@ -92,15 +102,20 @@ class AddPageState extends State<AddPage>{
   }
 
   ListTile _getListTile(BuildContext context, String currency) {
+    var currencyMap = {
+      'currency_code': "BTC",
+      'amount_owned': 0.0
+    };
+    //SavedCurrency curr = SavedCurrency.fromMap(currencyMap);
     return new ListTile(
       leading: _getLeadingWidget(currency),
       title: new Text(currency),
-      onTap: (){
-        Navigator.push(
-          context,
-          new MaterialPageRoute(builder: (context) => new CryptoDetailPage(currency)),
-        );
+      // trailing: new Icon(Icons.add),
+      trailing: new IconButton(icon:new Icon(Icons.add),
+      onPressed: (){
+
       }
+      ),
     );
   }
 
@@ -127,5 +142,9 @@ class AddPageState extends State<AddPage>{
       body: _buildBody()
     );
   }
+
+//  void onAdded(SavedCurrency curr){
+//    db.insertCurrency(curr);
+//  }
 
 }

@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 
 typedef AppBar AppBarCallback(BuildContext context);
 typedef void TextFieldSubmitCallback(String value);
+typedef void TextFieldChangeCallback(String value);
 typedef void SetStateCallback(void fn());
 
 class SearchBar {
@@ -26,6 +27,9 @@ class SearchBar {
 
   /// A void callback which takes a string as an argument, this is fired every time the search is submitted. Do what you want with the result.
   final TextFieldSubmitCallback onSubmitted;
+
+  /// A void callback which takes a string as an argument, this is fired every time the search text field is changed. Do what you want with the result.
+  final TextFieldChangeCallback onChanged;
 
   /// Since this should be inside of a State class, just pass setState to this.
   final SetStateCallback setState;
@@ -52,6 +56,7 @@ class SearchBar {
     @required this.setState,
     @required this.buildDefaultAppBar,
     this.onSubmitted,
+    this.onChanged,
     this.controller,
     this.hintText = 'Search',
     this.inBar = true,
@@ -169,6 +174,9 @@ class SearchBar {
             }
 
             onSubmitted(val);
+          },
+          onChanged: (String val) async{
+            onChanged(val);
           },
           autofocus: true,
           controller: controller,
